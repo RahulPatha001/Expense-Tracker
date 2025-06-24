@@ -65,3 +65,68 @@ pip-delete-this-directory/ # Pip temporary directory
 # For example, local configuration files:
 # config.local.py
 # .env
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders
+env/
+venv/
+dsenv/
+.venv/
+
+# VS Code, PyCharm, and other IDE settings
+.vscode/
+.idea/
+*.swp
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# MyPy, Pyre, Pytype type checker reports
+.mypy_cache/
+.dmypy.json
+.pyre/
+
+# Environment files
+.env
+.env.*
+*.env
+
+# Local config files
+*.local
+*.log
+
+# SQLite DBs
+*.sqlite3
+*.db
+
+# Mac and Windows system files
+.DS_Store
+Thumbs.db
