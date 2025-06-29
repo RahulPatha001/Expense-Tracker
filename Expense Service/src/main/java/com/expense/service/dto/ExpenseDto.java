@@ -24,6 +24,7 @@ public class ExpenseDto {
     @JsonProperty(value = "user_id")
     private String userId;
 
+    @NonNull
     @JsonProperty(value = "amount")
     private String amount;
 
