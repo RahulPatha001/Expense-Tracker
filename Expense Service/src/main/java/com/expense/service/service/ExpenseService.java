@@ -46,13 +46,14 @@ public class ExpenseService {
             expense.setCurrency(Strings.isNotBlank(expenseDto.getCurrency()) ? expenseDto.getCurrency() : expense.getCurrency());
             expense.setMerchant(Strings.isNotBlank(expenseDto.getMerchant()) ? expenseDto.getMerchant() : expense.getMerchant());
             expense.setAmount(expenseDto.getAmount());
+            expenseRepository.save(expense);
             return true;
         }
     }
 
-    public List<Expense> getExpenses(String userId){
+    public List<ExpenseDto> getExpenses(String userId){
         List<Expense> expenseList = expenseRepository.findByUserId(userId);
-        return objectMapper.convertValue(expenseList, new TypeReference<List<Expense>>() {});
+        return objectMapper.convertValue(expenseList, new TypeReference<List<ExpenseDto>>() {});
     }
 
     public void setCurrency(ExpenseDto expenseDto){
