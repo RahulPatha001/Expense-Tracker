@@ -14,6 +14,10 @@ producer = KafkaProducer(bootstrap_servers=['localhost:9092'], value_serializer=
 def handle_message():
     message = request.json.get('message')
     result =  messageService.process_message(message)
+    serialized_result = result.json()
+
+    # Send the serialized result to the Kafka topic
+    producer.send('expense_service', result.dict())
     return jsonify({
     "amount": result.amount,
     "merchant": result.merchant,
