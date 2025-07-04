@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from langchain_mistralai import ChatMistralAI
 import os
 
-from service.Expense import Expense
+from app.service.Expense import Expense
 
 class LLMService:
     def __init__(self):
