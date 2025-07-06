@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 
 @AllArgsConstructor
 @RestController
@@ -60,9 +62,11 @@ public class AuthController {
     public ResponseEntity<String> ping(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.isAuthenticated()){
-            return ResponseEntity.ok("pong");
-        }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("unauthorized");
+            String userId = userDetailsService.findByUsername(authentication.getName());
+            if(Objects.nonNull(userId)){
+                return ResponseEntity.ok(userId);
+            }
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("unauthorized");
     }
 }

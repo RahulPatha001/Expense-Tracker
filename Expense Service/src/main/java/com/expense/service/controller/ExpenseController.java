@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -30,6 +32,16 @@ public class ExpenseController {
             return new ResponseEntity<>(expenseDtoList, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/addexpense")
+    public ResponseEntity<Boolean> addExpenses(@RequestHeader(value = "X-User_Id") @NonNull String userId, ExpenseDto expenseDto){
+        try {
+            expenseDto.setUserId(userId);
+            return new ResponseEntity<>(expenseService.createExpense(expenseDto), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
         }
     }
 }

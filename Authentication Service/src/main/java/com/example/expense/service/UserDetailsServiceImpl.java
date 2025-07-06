@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -55,6 +56,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public UserInfo checkIfUserAlreadyExist(UserInfoDto userInfoDto){
         return userRepository.findByUsername(userInfoDto.getUsername());
+    }
+
+    public String findByUsername(String userName){
+        return Optional.of(userRepository.findByUsername(userName)).map(UserInfo::getUserId).orElse(null);
     }
 
     public Boolean signupUser(UserInfoDto userInfoDto){
