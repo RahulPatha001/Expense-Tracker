@@ -8,14 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/expense/v1")
 public class ExpenseController {
 
     private ExpenseService expenseService;
@@ -25,8 +23,8 @@ public class ExpenseController {
         this.expenseService = expenseService;
     }
 
-    @GetMapping("expense/v1/")
-    public ResponseEntity<List<ExpenseDto>> getExpenses(@PathParam("user_id") @NonNull String userId){
+    @GetMapping("/getexpense")
+    public ResponseEntity<List<ExpenseDto>> getExpenses(@RequestParam("user_id") @NonNull String userId){
         try {
             List<ExpenseDto> expenseDtoList = expenseService.getExpenses(userId);
             return new ResponseEntity<>(expenseDtoList, HttpStatus.OK);
@@ -36,8 +34,10 @@ public class ExpenseController {
     }
 
     @PostMapping("/addexpense")
-    public ResponseEntity<Boolean> addExpenses(@RequestHeader(value = "X-User_Id") @NonNull String userId, ExpenseDto expenseDto){
+    public ResponseEntity<Boolean> addExpenses( @RequestHeader(value = "X-User-Id") @NonNull String userId,
+                                                @RequestBody ExpenseDto expenseDto){
         try {
+            System.out.println(userId);
             expenseDto.setUserId(userId);
             return new ResponseEntity<>(expenseService.createExpense(expenseDto), HttpStatus.OK);
         } catch (Exception e) {
