@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -44,29 +46,44 @@ public class AuthController {
     public ResponseEntity SignUp(@RequestBody UserInfoDto userInfoDto){
         System.out.println(userInfoDto);
         try {
-            Boolean isUserSignedUp = userDetailsService.signupUser(userInfoDto);
-            if(Boolean.FALSE.equals(isUserSignedUp)){
-                return new ResponseEntity<>("User is already signed up !", HttpStatus.BAD_REQUEST);
-                }
+            String userId = userDetailsService.signupUser(userInfoDto);
+            if(Objects.isNull(userId)){
+                return new ResponseEntity<>("Already Exist", HttpStatus.BAD_REQUEST);
+            }
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userInfoDto.getUsername());
             String jwtToken = jwtService.GenerateToken(userInfoDto.getUsername());
             return new ResponseEntity<>(JwtResponseDto.builder().accessToken(jwtToken).token(refreshToken.getToken())
-                    .build(),HttpStatus.OK);
+                    .userId(userId).build(),HttpStatus.OK);
 
         }catch (Exception ex){
             return new ResponseEntity<>("Error in user service", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/ping")
-    public ResponseEntity<String> ping(){
+    @GetMapping("/auth/v1/ping")
+    public ResponseEntity<Map<String, String>> ping() {
+        System.out.println(">>> /ping endpoint hit");
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.isAuthenticated()){
+        System.out.println(">>> Auth object: " + authentication);
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            System.out.println(">>> Authenticated user: " + authentication.getName());
+
             String userId = userDetailsService.findByUsername(authentication.getName());
-            if(Objects.nonNull(userId)){
-                return ResponseEntity.ok(userId);
+            System.out.println(">>> userId from DB: " + userId);
+
+            if (Objects.nonNull(userId)) {
+                Map<String, String> response = new HashMap<>();
+                response.put("userId", userId);
+                return ResponseEntity.ok(response);
             }
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("unauthorized");
+
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "Unauthorized");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
+
+
 }

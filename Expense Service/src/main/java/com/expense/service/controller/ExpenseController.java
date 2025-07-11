@@ -37,8 +37,9 @@ public class ExpenseController {
     public ResponseEntity<Boolean> addExpenses( @RequestHeader(value = "X-User-Id") @NonNull String userId,
                                                 @RequestBody ExpenseDto expenseDto){
         try {
-            System.out.println(userId);
+            System.out.println("Header user id "+userId);
             expenseDto.setUserId(userId);
+            System.out.println("Expense dto user id"+ expenseDto.getUserId());
             return new ResponseEntity<>(expenseService.createExpense(expenseDto), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
