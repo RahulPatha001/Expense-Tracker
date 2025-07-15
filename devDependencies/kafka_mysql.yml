@@ -1,0 +1,102 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 2181:2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT, PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  mysql:
+    image: mysql:8.3.0
+    container_name: mysql-8.3.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Rahul.123*
+      MYSQL_USER: test
+      MYSQL_PASSWORD: Rahul.123*
+    ports:
+      - '3307:3306'
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+  user-service:
+    image: user-service
+    container_name: user-service
+    ports:
+      - '9810:9810'
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: userservice 
+    depends_on:
+      - kafka
+      - mysql
+      - auth-service
+
+  auth-service:
+    image: auth-service
+    container_name: auth-service
+    ports:
+      - '9898:9898'
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: authservice
+    depends_on:
+      - kafka
+      - mysql
+
+  expense-service:
+    image: expense-service
+    container_name: expense-service
+    ports:
+      - '9820:9820'
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DB: expenseservice
+    depends_on:
+      - kafka
+      - mysql
+
+  dsservice:
+    image: ds-service
+    container_name: ds-service
+    ports:
+      - '8010:8010'
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      AI_API_KEY: G1GJh4iDHySun8J2ZVQMqj5qZvC0hZ5p
+    depends_on:
+      - kafka
+      - mysql
+      - expense-service
+      - user-service
+
+volumes:
+  mysql-db:
+    driver: local
