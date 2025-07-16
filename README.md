@@ -69,26 +69,33 @@ Handles expense data ingestion, both from Kafka and via direct user APIs.
 
 ---
 
-## 📡 5. API Gateway (KONG)
+## 🛡️ 5. Kong API Gateway
 
-Acts as a unified entry point for all client requests.
+Acts as the single entry point for client requests.
 
-- **Functions:**
-  - Forwards only `/signup` and `/login` directly to Auth Service
-  - Verifies access tokens for all other endpoints via Auth Service’s `/ping` 
-  - Routes authorized traffic to appropriate microservices
+- **Responsibilities:**
+  - Routes all requests to appropriate services
+  - Only `/login` and `/signup` are open
+  - For other requests, Kong:
+    - Extracts and verifies token via `auth-service/getUserId`
+    - Injects `X-User-Id` header before forwarding to downstream services
+
+> This offloads authentication from your app code and makes security centralized and consistent.
 
 ---
 
-## 🔄 Service Interaction Flow
+## 🔁 Service Interaction Flow
 
-- Client interacts with the API Gateway
-- API Gateway routes `/login` and `/signup` to Auth Service
-- Auth Service issues tokens
-- All other requests are passed through the gateway with token verification
-- SMS messages go to dsService → parsed → pushed to Kafka
-- Expense Service consumes from Kafka and stores expense
-- Auth Service also pushes user details to Kafka → consumed by User Service
+1. Client sends request to Kong
+2. For `/login` or `/signup`, Kong forwards to Auth Service directly
+3. For all other endpoints:
+   - Kong calls `auth/v1/ping` using the access token
+   - Injects `X-User-Id` header in the request
+   - Forwards request to appropriate service (e.g., `expense-service`)
+4. SMS ingestion (via user or webhook) is sent to `dsService`
+5. `dsService` processes and publishes to Kafka
+6. `expense-service` consumes and stores expense
+7. User details are also produced by `auth-service` and consumed by `user-service`
 
 ---
 
