@@ -1,26 +1,26 @@
-# 💰 Expense Tracker Backend
+# Expense Tracker Backend
 
 Welcome to the backend of our **Expense Tracker Application** – a modular, microservices-based system built with scalability and clarity in mind. This project helps users track their expenses through both manual entry and automated SMS parsing powered by a Data Science layer.
 
 ---
 
-## 🧱 System Overview
+## System Overview
 
 The backend is designed as a set of microservices communicating over REST and Kafka, with token-based authentication and structured data pipelines.
 
-### 💡 Key Microservices
+### Key Microservices
 
-1. **Auth Service** 🔐  
-2. **User Service** 👤  
-3. **Data Science Service (dsService)** 🧠  
-4. **Expense Service** 💸  
-5. **API Gateway** 📡
+1. **Auth Service** 
+2. **User Service**   
+3. **Data Science Service (dsService)**  
+4. **Expense Service** 
+5. **API Gateway** 
 
 Each service is isolated with its own database and interacts via REST APIs and Kafka topics.
 
 ---
 
-## 🔐 1. Auth Service
+## 1. Auth Service
 
 Responsible for user authentication, token issuance, and user identity resolution.
 
@@ -33,7 +33,7 @@ Responsible for user authentication, token issuance, and user identity resolutio
 
 ---
 
-## 👤 2. User Service
+## 2. User Service
 
 Manages and stores user-related data after authentication.
 
@@ -45,7 +45,7 @@ Manages and stores user-related data after authentication.
 
 ---
 
-## 🧠 3. Data Science Service (dsService)
+## 3. Data Science Service (dsService)
 
 Processes incoming SMS messages using a Large Language Model to extract structured expense data.
 
@@ -57,7 +57,7 @@ Processes incoming SMS messages using a Large Language Model to extract structur
 
 ---
 
-## 💸 4. Expense Service
+## 4. Expense Service
 
 Handles expense data ingestion, both from Kafka and via direct user APIs.
 
@@ -69,7 +69,7 @@ Handles expense data ingestion, both from Kafka and via direct user APIs.
 
 ---
 
-## 🛡️ 5. Kong API Gateway
+## 5. Kong API Gateway
 
 Acts as the single entry point for client requests.
 
@@ -84,7 +84,7 @@ Acts as the single entry point for client requests.
 
 ---
 
-## 🔁 Service Interaction Flow
+## Service Interaction Flow
 
 1. Client sends request to Kong
 2. For `/login` or `/signup`, Kong forwards to Auth Service directly
